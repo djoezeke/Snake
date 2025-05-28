@@ -4,7 +4,7 @@ This Snake Game is developed using Python and The Pygame Library, offering a cla
 
 ## ScreenShots
 
-![Screenshot](https://github.com/djoezeke/snake)
+![Screenshot](snake/assets/screenshot.png)
 
 ## 🚀 Features
 
