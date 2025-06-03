@@ -5,7 +5,9 @@ import pygame
 from pygame import Vector2
 from snake.game.config import CELL_SIZE
 from snake.game.config import CELL_NUM
-from snake.game.colors import Colors
+
+# from snake.game.colors import Colors
+from snake.game.config import apple
 
 
 class Fruit:
@@ -22,9 +24,10 @@ class Fruit:
         self.y = random.randint(0, CELL_NUM - 1)
         self.pos = Vector2(self.x, self.y)
 
-    def draw(self, window):
+    def draw(self, window: pygame.Surface):
         """Draw"""
         fruit_rect = pygame.Rect(
             self.pos.x * CELL_SIZE, self.pos.y * CELL_SIZE, CELL_SIZE, CELL_SIZE
         )
-        pygame.draw.rect(window, Colors.friut, fruit_rect)
+        window.blit(apple, fruit_rect)
+        # pygame.draw.rect(window, Colors.friut, fruit_rect)

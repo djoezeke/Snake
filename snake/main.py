@@ -63,7 +63,8 @@ class Game:
         if self.fruit.pos == self.snake.body[0]:
             self.fruit.randomise()
             self.snake.add_block()
-            self.score += 5
+            config.crunch_c.play(config.crunch)
+            # self.score += 5
 
         if self.snake.collide_self():
             self.game_over = True
@@ -136,12 +137,13 @@ def snake(args: list):
 
     pygame.display.set_caption("Snake")
 
-    config.music.set_volume(config.volume)
-    config.music.play(loops=-1)
+    config.music_c.play(config.music)
 
     if "--nosound" in args:
-        config.music.set_volume(0)
-        config.music.stop()
+        config.music_c.set_volume(0)
+        config.music_c.stop()
+        config.crunch_c.set_volume(0)
+        config.crunch_c.stop()
 
     run: bool = True
 
