@@ -57,19 +57,46 @@ apple: pygame.Surface = pygame.image.load(get_image("apple.png"))
 apple = pygame.transform.scale(apple, (CELL_SIZE, CELL_SIZE))
 
 body_bl: pygame.Surface = pygame.image.load(get_image("body_bl.png"))
+body_bl = pygame.transform.scale(body_bl, (CELL_SIZE, CELL_SIZE))
+
 body_br: pygame.Surface = pygame.image.load(get_image("body_br.png"))
+body_br = pygame.transform.scale(body_br, (CELL_SIZE, CELL_SIZE))
+
 body_tl: pygame.Surface = pygame.image.load(get_image("body_tl.png"))
+body_tl = pygame.transform.scale(body_tl, (CELL_SIZE, CELL_SIZE))
+
 body_tr: pygame.Surface = pygame.image.load(get_image("body_tr.png"))
+body_tr = pygame.transform.scale(body_tr, (CELL_SIZE, CELL_SIZE))
+
 head_up: pygame.Surface = pygame.image.load(get_image("head_up.png"))
+head_up = pygame.transform.scale(head_up, (CELL_SIZE, CELL_SIZE))
+
 head_left: pygame.Surface = pygame.image.load(get_image("head_left.png"))
+head_left = pygame.transform.scale(head_left, (CELL_SIZE, CELL_SIZE))
+
 head_right: pygame.Surface = pygame.image.load(get_image("head_right.png"))
+head_right = pygame.transform.scale(head_right, (CELL_SIZE, CELL_SIZE))
+
 head_down: pygame.Surface = pygame.image.load(get_image("head_down.png"))
+head_down = pygame.transform.scale(head_down, (CELL_SIZE, CELL_SIZE))
+
 tail_up: pygame.Surface = pygame.image.load(get_image("tail_up.png"))
+tail_up = pygame.transform.scale(tail_up, (CELL_SIZE, CELL_SIZE))
+
 tail_left: pygame.Surface = pygame.image.load(get_image("tail_left.png"))
+tail_left = pygame.transform.scale(tail_left, (CELL_SIZE, CELL_SIZE))
+
 tail_right: pygame.Surface = pygame.image.load(get_image("tail_right.png"))
+tail_right = pygame.transform.scale(tail_right, (CELL_SIZE, CELL_SIZE))
+
 tail_down: pygame.Surface = pygame.image.load(get_image("tail_down.png"))
+tail_down = pygame.transform.scale(tail_down, (CELL_SIZE, CELL_SIZE))
+
 body_horizontal: pygame.Surface = pygame.image.load(get_image("body_horizontal.png"))
+body_horizontal = pygame.transform.scale(body_horizontal, (CELL_SIZE, CELL_SIZE))
+
 body_vertical: pygame.Surface = pygame.image.load(get_image("body_vertical.png"))
+body_vertical = pygame.transform.scale(body_vertical, (CELL_SIZE, CELL_SIZE))
 
 # Fonts
 pygame.font.init()  # initialize pygame font
