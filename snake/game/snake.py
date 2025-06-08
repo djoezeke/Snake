@@ -33,6 +33,7 @@ class Snake:
         self.y = random.randint(0, CELL_NUM - 3)
         self.direction = Vector2(1, 0)
         self.new_block = False
+        self.head = self.tail = None
         self.body = [
             Vector2(self.x, self.y),
             Vector2(self.x - 1, self.y),
@@ -54,11 +55,6 @@ class Snake:
 
     def draw(self, window):
         """Draw"""
-        # for block in self.body:
-        #     block_rect = pygame.Rect(
-        #         block.x * CELL_SIZE, block.y * CELL_SIZE, CELL_SIZE, CELL_SIZE
-        #     )
-        #     pygame.draw.rect(window, Colors.snake, block_rect)
         self.update_head_graphics()
         self.update_tail_graphics()
 
@@ -109,6 +105,7 @@ class Snake:
                         window.blit(body_br, block_rect)
 
     def update_head_graphics(self):
+        """update_head_graphics"""
         head_relation = self.body[1] - self.body[0]
         if head_relation == Vector2(1, 0):
             self.head = head_left
@@ -120,6 +117,7 @@ class Snake:
             self.head = head_down
 
     def update_tail_graphics(self):
+        """update_tail_graphics"""
         tail_relation = self.body[-2] - self.body[-1]
         if tail_relation == Vector2(1, 0):
             self.tail = tail_left

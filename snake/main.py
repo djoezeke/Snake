@@ -7,6 +7,7 @@ from snake.game import config
 from snake.game.colors import Colors
 from snake.game.friut import Fruit
 from snake.game.snake import Snake
+from snake.game.obstacle import Obstacle
 
 SNAKE_MOVE = pygame.USEREVENT
 pygame.time.set_timer(SNAKE_MOVE, 200)
@@ -25,6 +26,7 @@ class Game:
         self.highscore = 0
         self.paused = False
         self.game_over = False
+        Obstacle.load_obstacles("obstacle.json")
 
     def update_score(self):
         """update_score"""
@@ -56,6 +58,7 @@ class Game:
                             config.CELL_SIZE,
                         )
                         pygame.draw.rect(window, Colors.grass, grass_rect)
+        Obstacle.draw_obstacles(window)
 
     def collision(self):
         """collision"""
@@ -120,6 +123,7 @@ class Game:
 
     def move_down(self):
         """move_down"""
+
         if self.game_over is False and self.paused is False:
             self.snake.move_down()
 
@@ -136,8 +140,7 @@ def snake(args: list):
     """snake"""
 
     pygame.display.set_caption("Snake")
-
-    config.music_c.play(config.music)
+    config.music_c.play(config.music, loops=-1)
 
     if "--nosound" in args:
         config.music_c.set_volume(0)
