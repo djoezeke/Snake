@@ -32,6 +32,8 @@ class Game:
         """update_score"""
         if self.game_over is False and self.paused is False:
             self.score += 1
+            if self.score > self.highscore:
+                self.highscore = self.score
 
     def update(self):
         """update"""
@@ -86,6 +88,9 @@ class Game:
     def draw(self, screen: pygame.Surface):
         """draw"""
         score_suface = config.font.render("Score", True, Colors.white)
+        highscore_surface = config.font.render(
+            f"High Score: {self.highscore}", True, Colors.white
+        )
         over_suface = config.font.render("GAME OVER", True, Colors.white)
         paused_suface = config.font.render("GAME PAUSED", True, Colors.white)
 
@@ -100,6 +105,7 @@ class Game:
 
         screen.blit(score_suface, (10, 20, 50, 50))
         screen.blit(score_value_suface, (100, 20, 50, 50))
+        screen.blit(highscore_surface, (10, 60, 200, 50))
 
         if self.paused:
             screen.blit(
@@ -110,6 +116,26 @@ class Game:
             screen.blit(
                 over_suface, ((config.WIDTH / 2) - 100, config.HEIGHT / 2, 50, 50)
             )
+
+    def show_menu(self, screen):
+        """Display start menu"""
+        screen.fill(Colors.background)
+        title = config.font.render("SNAKE GAME", True, Colors.white)
+        start = config.font.render("Press ENTER to Start", True, Colors.white)
+        screen.blit(title, ((config.WIDTH // 2) - 100, config.HEIGHT // 2 - 60))
+        screen.blit(start, ((config.WIDTH // 2) - 140, config.HEIGHT // 2))
+        pygame.display.update()
+
+    def show_game_over(self, screen):
+        """Display game over screen"""
+        screen.fill(Colors.background)
+        over = config.font.render("GAME OVER", True, Colors.white)
+        restart = config.font.render("Press ENTER to Restart", True, Colors.white)
+        score = config.font.render(f"Score: {self.score}", True, Colors.white)
+        screen.blit(over, ((config.WIDTH // 2) - 100, config.HEIGHT // 2 - 60))
+        screen.blit(score, ((config.WIDTH // 2) - 60, config.HEIGHT // 2))
+        screen.blit(restart, ((config.WIDTH // 2) - 160, config.HEIGHT // 2 + 60))
+        pygame.display.update()
 
     def move_left(self):
         """move_left"""
@@ -148,11 +174,25 @@ def snake(args: list):
         config.crunch_c.set_volume(0)
         config.crunch_c.stop()
 
+    menu = True
+    while menu:
+        game.show_menu(config.WINDOW)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                menu = False
+
     run: bool = True
 
     config.clock = pygame.time.Clock()
 
+    move_interval = 200
+    pygame.time.set_timer(SNAKE_MOVE, move_interval)
+
     # main game loop
+    sound_on = True
     while run:
         config.clock.tick(config.FPS)
         pygame.display.update()
@@ -188,11 +228,30 @@ def snake(args: list):
                 if event.key == pygame.K_UP:
                     game.move_up()
 
+                if event.key == pygame.K_m:
+                    sound_on = not sound_on
+                    config.music_c.set_volume(0.3 if sound_on else 0)
+                    config.crunch_c.set_volume(1 if sound_on else 0)
+
             if event.type == SNAKE_MOVE:
                 game.update()
 
             if event.type == UPDATE_SCORE:
                 game.update_score()
+
+        if game.game_over:
+            game.show_game_over(config.WINDOW)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                    game.reset()
+                    break
+            continue
+
+        if game.score and game.score % 10 == 0:
+            move_interval = max(50, 200 - (game.score // 10) * 10)
+            pygame.time.set_timer(SNAKE_MOVE, move_interval)
 
         game.draw(config.WINDOW)
 

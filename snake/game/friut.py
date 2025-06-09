@@ -25,9 +25,15 @@ class Fruit:
         self.pos = Vector2(self.x, self.y)
 
     def draw(self, window: pygame.Surface):
-        """Draw"""
+        """Draw with pulse effect"""
+        import math, time
+
+        scale = 1 + 0.1 * math.sin(time.time() * 5)
+        size = int(CELL_SIZE * scale)
         fruit_rect = pygame.Rect(
-            self.pos.x * CELL_SIZE, self.pos.y * CELL_SIZE, CELL_SIZE, CELL_SIZE
+            self.pos.x * CELL_SIZE + (CELL_SIZE - size) // 2,
+            self.pos.y * CELL_SIZE + (CELL_SIZE - size) // 2,
+            size,
+            size,
         )
-        window.blit(apple, fruit_rect)
-        # pygame.draw.rect(window, Colors.friut, fruit_rect)
+        window.blit(pygame.transform.scale(apple, (size, size)), fruit_rect)
