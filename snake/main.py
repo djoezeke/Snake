@@ -8,6 +8,7 @@ from snake.game.colors import Colors
 from snake.game.friut import Fruit
 from snake.game.snake import Snake
 from snake.game.obstacle import Obstacle
+from snake.game.settings import settings
 
 SNAKE_MOVE = pygame.USEREVENT
 pygame.time.set_timer(SNAKE_MOVE, 200)
@@ -49,6 +50,8 @@ class Game:
 
     def draw_grass(self, window):
         """draw_grass"""
+        if not settings.show_grass:
+            return
         for row in range(config.CELL_NUM):
             if row % 2 == 0:
                 for col in range(config.CELL_NUM):
@@ -158,6 +161,93 @@ class Game:
         if self.game_over is False and self.paused is False:
             self.snake.move_up()
 
+    def show_settings_menu(self, screen):
+        """Display settings menu for controls and graphics"""
+        waiting = True
+        selected = 0
+        options = ["Left", "Right", "Up", "Down", "Toggle Grass", "Back"]
+        actions = ["left", "right", "up", "down"]
+
+        while waiting:
+            screen.fill(Colors.background)
+            title = config.font.render("SETTINGS", True, Colors.white)
+            screen.blit(title, ((config.WIDTH // 2) - 80, 60))
+            for i, opt in enumerate(options):
+                color = Colors.friut if i == selected else Colors.white
+                if opt in ["Left", "Right", "Up", "Down"]:
+                    key_name = pygame.key.name(settings.controls[actions[i]])
+                    text = config.font.render(f"{opt}: {key_name.upper()}", True, color)
+                elif opt == "Toggle Grass":
+                    state = "ON" if settings.show_grass else "OFF"
+                    text = config.font.render(f"{opt}: {state}", True, color)
+                else:
+                    text = config.font.render(opt, True, color)
+                screen.blit(text, (100, 140 + i * 50))
+            pygame.display.update()
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_UP:
+                        selected = (selected - 1) % len(options)
+                    elif event.key == pygame.K_DOWN:
+                        selected = (selected + 1) % len(options)
+                    elif event.key == pygame.K_RETURN:
+                        if selected < 4:
+                            # Remap control
+                            remap = True
+                            while remap:
+                                info = config.font.render(
+                                    "Press new key...", True, Colors.friut
+                                )
+                                screen.blit(info, (100, 440))
+                                pygame.display.update()
+                                for e in pygame.event.get():
+                                    if e.type == pygame.KEYDOWN:
+                                        settings.set_control(actions[selected], e.key)
+                                        remap = False
+                        elif options[selected] == "Toggle Grass":
+                            settings.toggle_grass()
+                        elif options[selected] == "Back":
+                            waiting = False
+
+    def show_pause_menu(self, screen):
+        """Display pause overlay with options"""
+        paused = True
+        selected = 0
+        options = ["Resume", "Settings", "Quit"]
+        while paused:
+            screen.fill(Colors.background)
+            overlay = pygame.Surface((config.WIDTH, config.HEIGHT), pygame.SRCALPHA)
+            overlay.fill((0, 0, 0, 180))
+            screen.blit(overlay, (0, 0))
+            title = config.font.render("PAUSED", True, Colors.white)
+            screen.blit(title, ((config.WIDTH // 2) - 80, 100))
+            for i, opt in enumerate(options):
+                color = Colors.friut if i == selected else Colors.white
+                text = config.font.render(opt, True, color)
+                screen.blit(text, (config.WIDTH // 2 - 60, 200 + i * 60))
+            pygame.display.update()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_UP:
+                        selected = (selected - 1) % len(options)
+                    elif event.key == pygame.K_DOWN:
+                        selected = (selected + 1) % len(options)
+                    elif event.key == pygame.K_RETURN:
+                        if options[selected] == "Resume":
+                            paused = False
+                        elif options[selected] == "Settings":
+                            show_settings_menu(screen)
+                        elif options[selected] == "Quit":
+                            pygame.quit()
+                            exit()
+
 
 game = Game()
 
@@ -210,22 +300,17 @@ def snake(args: list):
                         game.reset()
 
                 if event.key == pygame.K_SPACE and game.game_over is False:
+                    game.show_pause_menu(config.WINDOW)
+                    continue
 
-                    if game.paused:
-                        game.paused = False
-                    else:
-                        game.paused = True
-
-                if event.key == pygame.K_LEFT:
+                # Use settings for controls
+                if event.key == settings.controls["left"]:
                     game.move_left()
-
-                if event.key == pygame.K_RIGHT:
+                if event.key == settings.controls["right"]:
                     game.move_right()
-
-                if event.key == pygame.K_DOWN:
+                if event.key == settings.controls["down"]:
                     game.move_down()
-
-                if event.key == pygame.K_UP:
+                if event.key == settings.controls["up"]:
                     game.move_up()
 
                 if event.key == pygame.K_m:
